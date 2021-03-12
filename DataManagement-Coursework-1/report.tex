@@ -1,0 +1,64 @@
+\documentclass[12pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage{listings}
+\usepackage{xcolor}
+
+\definecolor{background}{rgb}{0.95, 0.95, 0.95}
+\definecolor{sigWords}{rgb}{250,0,0}
+\lstdefinestyle{codeStyle}{
+backgroundcolor=\color{background},
+keywordstyle=\color{sigWords},
+numbers=left,
+}
+
+\author{Denitsa Radeva}
+\title{report}
+\date{March 2021}
+
+
+
+\begin{document}
+
+
+\begin{titlepage}
+   \begin{center}
+       \vspace*{1cm}
+
+       \textbf{\huge UNIX Coursework}
+
+       \vspace{0.5cm}
+        Data Management (1204)
+            
+       \vspace{1.5cm}
+
+       \textbf{Denitsa Radeva\\Student ID: 31693849}
+   \end{center}
+\end{titlepage}
+
+\section{My Script}
+\lstset{style=codeStyle}
+\begin{lstlisting}[showstringspaces=false, language=sh, caption=Extracting information from files.]
+#!/bin/bash
+
+for file in $1/*;
+do
+filename=$(basename $file);
+printf $filename" "|sed 's/.dat//g';
+cat $file |grep 'Content'|sed 's/>/ /g'
+|awk 'BEGIN{count=0}($1=="<Content"){count+=1}
+END{print count}';done|sort -k2,2gr
+\end{lstlisting}
+\section{Description}
+The above script is extracting the number of reviews that are mentioned in all data files from a specified directory, which is given as a user input. The name of the script is 'countreviews.sh' and it expects a name or an absolute path of a directory as an argument. The following methodology is used:
+\begin{enumerate}
+	\item \textbf{For cycle} to loop through all files within a given directory.
+	\item The \textbf{basename} utility to extract the current file's name.
+	\item Usage of \textbf{sed} to remove the suffix '.dat' from the current file's name.
+	\item The utility \textbf{grep} to find all occurrences of the word "Content", because each time it is found, that's exactly $+$1 review more.
+	\item The utility \textbf{sed} to replace the symbol '$>$' with a white space in order to separate "$<$Content" from the text of the review and to spot it easily in the next step.
+	\item The utility \textbf{awk} to count how many times "$<$Content" 
+	is found throughout the document.
+	\item Usage of \textbf{sort} in the end to sort in a descending order by the second column of the output, which contains the number of reviews found. 
+\end{enumerate}
+
+\end{document}
